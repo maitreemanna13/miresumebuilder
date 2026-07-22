@@ -24,3 +24,41 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Slow-drifting blurred blobs behind the landing page hero. */
+@keyframes drift-a {
+  0%,
+  100% {
+    transform: translate(-6%, -8%) scale(1);
+  }
+  50% {
+    transform: translate(8%, 6%) scale(1.15);
+  }
+}
+@keyframes drift-b {
+  0%,
+  100% {
+    transform: translate(6%, 8%) scale(1);
+  }
+  50% {
+    transform: translate(-8%, -4%) scale(1.1);
+  }
+}
+@keyframes drift-c {
+  0%,
+  100% {
+    transform: translate(0%, 4%) scale(1);
+  }
+  50% {
+    transform: translate(-10%, -6%) scale(1.08);
+  }
+}
+.animate-drift-a {
+  animation: drift-a 20s ease-in-out infinite;
+}
+.animate-drift-b {
+  animation: drift-b 24s ease-in-out infinite;
+}
+.animate-drift-c {
+  animation: drift-c 28s ease-in-out infinite;
+}

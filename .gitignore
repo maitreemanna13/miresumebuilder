@@ -29,6 +29,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+dev.log
+
+# claude code local settings
+.claude/settings.local.json
 
 # env files (can opt-in for committing if needed)
 .env*
@@ -39,3 +43,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# prisma
+/generated/
+/dev.db
+/dev.db-journal
+/prisma/dev.db
+/prisma/dev.db-journal
