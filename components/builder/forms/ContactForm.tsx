@@ -64,9 +64,9 @@ export function ContactForm() {
     <div className="flex flex-col gap-4">
       {!contact.fullName.trim() ? (
         <p className="rounded-md bg-indigo-50 px-3 py-2 text-xs text-indigo-700">
-          New here? Try <span className="font-medium">Load sample data</span> (top right) to see a
-          template filled in, or start with the <span className="font-medium">Template</span> tab to
-          pick a look first.
+          Let's build your resume — start by filling in your details below. Don't worry about
+          getting the wording perfect; once you've added some content, the{" "}
+          <span className="font-medium">AI Assistant</span> tab can help refine it for you.
         </p>
       ) : null}
       <Field label="Photo (optional)">

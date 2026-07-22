@@ -30,14 +30,14 @@ export default function BuildPage() {
 
   return (
     <div className="flex h-screen flex-col">
-      <header className="flex items-center justify-between border-b border-zinc-200 bg-white px-6 py-3">
+      <header className="flex flex-wrap items-center justify-between gap-y-2 border-b border-zinc-200 bg-white px-3 py-3 sm:px-6">
         <Link href="/" className="flex items-center gap-2">
           <span className="flex h-7 w-7 items-center justify-center rounded-md bg-indigo-600 text-sm font-bold text-white">
             R
           </span>
-          <h1 className="text-lg font-semibold text-zinc-900">Resume Builder</h1>
+          <h1 className="hidden text-lg font-semibold text-zinc-900 sm:block">Resume Builder</h1>
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <UploadDropzone onExtracted={handleExtracted} />
           <button
             type="button"

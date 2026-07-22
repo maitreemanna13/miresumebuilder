@@ -7,7 +7,7 @@ export function TipJarToast({ onClose }: { onClose: () => void }) {
     // browser's own plugin surface) renders in its own compositing layer
     // that sits above regular page content regardless of z-index. A toast
     // positioned on the right would be silently covered by it.
-    <div className="fixed bottom-4 left-4 z-50 w-72 rounded-lg border border-zinc-200 bg-white p-4 shadow-lg">
+    <div className="fixed bottom-4 left-4 z-50 w-72 max-w-[calc(100vw-2rem)] rounded-lg border border-zinc-200 bg-white p-4 shadow-lg">
       <button
         type="button"
         onClick={onClose}
