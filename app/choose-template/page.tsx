@@ -15,20 +15,20 @@ const FILTERS: { id: TemplateTag | "all"; label: string }[] = [
   { id: "sidebar", label: "Sidebar layout" },
 ];
 
-// @react-pdf/renderer's viewer touches browser-only APIs (Blob/iframe), so
-// it must never be evaluated during SSR.
-const PDFViewer = dynamic(
-  () => import("@react-pdf/renderer").then((mod) => mod.PDFViewer),
-  { ssr: false, loading: () => <ThumbLoading /> }
+// pdf.js (used inside TemplateThumbnail) touches browser-only globals at
+// module-evaluation time, so it must never be evaluated during SSR — same
+// reason the builder's live preview is dynamically imported this way.
+const TemplateThumbnail = dynamic(
+  () => import("@/components/builder/TemplateThumbnail").then((mod) => mod.TemplateThumbnail),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-72 w-full items-center justify-center bg-zinc-100 text-xs text-zinc-400">
+        Loading…
+      </div>
+    ),
+  }
 );
-
-function ThumbLoading() {
-  return (
-    <div className="flex h-full w-full items-center justify-center text-xs text-zinc-400">
-      Loading…
-    </div>
-  );
-}
 
 export default function ChooseTemplatePage() {
   const router = useRouter();
@@ -99,7 +99,6 @@ export default function ChooseTemplatePage() {
       <div className="mt-8 grid w-full grid-cols-1 gap-6 sm:grid-cols-3">
         {visibleTemplates.map((template) => {
           const isSelected = template.id === selectedTemplateId;
-          const { Document } = template;
           return (
             <button
               key={template.id}
@@ -109,11 +108,11 @@ export default function ChooseTemplatePage() {
                 isSelected ? "border-indigo-600 ring-1 ring-indigo-600" : "border-zinc-200 hover:border-indigo-300"
               }`}
             >
-              <div className="h-72 w-full bg-zinc-100">
-                <PDFViewer style={{ width: "100%", height: "100%", border: "none" }} showToolbar={false}>
-                  <Document resume={resume} accentColor={selectedAccentColor ?? undefined} />
-                </PDFViewer>
-              </div>
+              <TemplateThumbnail
+                template={template}
+                resume={resume}
+                accentColor={selectedAccentColor ?? undefined}
+              />
               <div className="flex items-center justify-between px-3 py-2">
                 <span className="text-sm font-medium text-zinc-900">{template.name}</span>
                 {isSelected ? <span className="text-xs text-indigo-600">Selected</span> : null}

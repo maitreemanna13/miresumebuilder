@@ -2,19 +2,10 @@
 
 import "@/lib/browserPolyfills";
 import { useEffect, useRef, useState } from "react";
-import { pdf } from "@react-pdf/renderer";
-import { getDocument, GlobalWorkerOptions } from "pdfjs-dist";
 import { useResumeStore } from "@/store/resumeStore";
 import { getTemplate } from "@/templates/registry";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
-
-// Rendering each page to a plain <canvas> via pdf.js — not <PDFViewer>'s
-// <iframe> pointing at a blob URL — because that relies on the browser's
-// own embedded PDF viewer plugin, which desktop Chrome/Edge/Firefox have
-// but most mobile browsers (iOS Safari, Android Chrome) don't reliably
-// support inside an iframe. Canvas rendering works identically on every
-// device since it's pure JS, no native viewer involved.
-GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+import { renderPdfToCanvases } from "@/lib/pdf/renderPdfPreview";
 
 function PreviewLoading({ label }: { label: string }) {
   return (
@@ -66,38 +57,18 @@ export function PreviewPane() {
       setStatus("loading");
       try {
         const { Document } = getTemplate(templateId);
-        const blob = await pdf(
-          <Document resume={debouncedResume} accentColor={accentColor ?? undefined} />
-        ).toBlob();
-        const arrayBuffer = await blob.arrayBuffer();
-        if (cancelled) return;
-
-        const pdfDoc = await getDocument({ data: arrayBuffer }).promise;
-        if (cancelled) return;
-
         const container = containerRef.current;
         if (!container) return;
-        container.replaceChildren();
 
-        for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
-          const page = await pdfDoc.getPage(pageNum);
-          // Render at 2x the PDF's native scale for crisp text on
-          // high-DPI/mobile screens, then let CSS scale the canvas back
-          // down to fit the container width.
-          const viewport = page.getViewport({ scale: 2 });
-          const canvas = document.createElement("canvas");
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
-          canvas.style.width = "100%";
-          canvas.style.height = "auto";
-          canvas.className = "mb-4 block rounded shadow-sm";
-          const context = canvas.getContext("2d");
-          if (!context) continue;
-
-          await page.render({ canvas, canvasContext: context, viewport }).promise;
-          if (cancelled) return;
-          container.appendChild(canvas);
-        }
+        // Render at 2x the PDF's native scale for crisp text on
+        // high-DPI/mobile screens, then let CSS scale the canvas back
+        // down to fit the container width.
+        await renderPdfToCanvases(
+          <Document resume={debouncedResume} accentColor={accentColor ?? undefined} />,
+          container,
+          { scale: 2, canvasClassName: "mb-4 block rounded shadow-sm" }
+        );
+        if (cancelled) return;
 
         if (!cancelled) setStatus("ready");
       } catch (err) {
