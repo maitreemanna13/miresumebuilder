@@ -142,11 +142,32 @@ const FEATURES = [
   },
 ];
 
+const STRUCTURED_DATA = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Resume Builder",
+  description:
+    "Build a free, ATS-friendly resume in minutes. Pick from professional templates, edit with a live preview, and refine your wording with AI.",
+  url: "https://www.miresumebuilder.com",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Any",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
+
 export default async function LandingPage() {
   const session = await auth();
 
   return (
     <div className="flex flex-1 flex-col bg-white">
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger -- static, hardcoded JSON — not user input
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(STRUCTURED_DATA) }}
+      />
       <header className="flex items-center justify-between px-6 py-4 sm:px-10">
         <div className="flex items-center gap-2">
           <span className="flex h-8 w-8 items-center justify-center rounded-md bg-indigo-600 text-sm font-bold text-white">
