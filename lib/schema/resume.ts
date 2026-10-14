@@ -14,6 +14,21 @@ export const ContactSchema = z.object({
   photoDataUrl: z.string().max(400_000).optional(),
 });
 
+// A project delivered as part of a job, nested under that experience entry
+// — distinct from the top-level "projects" section (personal/side projects).
+export const ExperienceProjectSchema = z.object({
+  id: z.string(),
+  name: z.string().max(160),
+  client: z.string().max(160).optional(),
+  // The person's role on this project (e.g. "Tech Lead") — separate from
+  // their designation at the company, which lives on the parent entry.
+  role: z.string().max(160).optional(),
+  startDate: z.string().max(20).optional(),
+  endDate: z.string().max(20).optional(),
+  bullets: z.array(z.string().max(400)).max(8).default([]),
+  technologies: z.array(z.string().max(40)).max(20).default([]),
+});
+
 export const ExperienceEntrySchema = z.object({
   id: z.string(),
   company: z.string().max(160),
@@ -23,6 +38,7 @@ export const ExperienceEntrySchema = z.object({
   endDate: z.string().max(20).optional(),
   current: z.boolean().default(false),
   bullets: z.array(z.string().max(400)).max(12).default([]),
+  projects: z.array(ExperienceProjectSchema).max(10).default([]),
 });
 
 export const EducationEntrySchema = z.object({
@@ -96,6 +112,7 @@ export const ResumeSchema = z.object({
 export type Resume = z.infer<typeof ResumeSchema>;
 export type Contact = z.infer<typeof ContactSchema>;
 export type ExperienceEntry = z.infer<typeof ExperienceEntrySchema>;
+export type ExperienceProject = z.infer<typeof ExperienceProjectSchema>;
 export type EducationEntry = z.infer<typeof EducationEntrySchema>;
 export type ProjectEntry = z.infer<typeof ProjectEntrySchema>;
 export type CertificationEntry = z.infer<typeof CertificationEntrySchema>;
@@ -121,7 +138,7 @@ export const ResumeExtractionSchema = z.object({
   contact: ContactSchema.partial(),
   summary: z.string().max(2000).optional(),
   experience: z
-    .array(ExperienceEntrySchema.omit({ id: true }).partial({ current: true }))
+    .array(ExperienceEntrySchema.omit({ id: true, projects: true }).partial({ current: true }))
     .default([]),
   education: z.array(EducationEntrySchema.omit({ id: true })).default([]),
   skills: z.array(SkillGroupSchema.omit({ id: true })).default([]),

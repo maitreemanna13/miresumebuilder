@@ -31,6 +31,7 @@ export const SAMPLE_RESUME: Resume = {
         "Built an internal rate-limiting and quota service now used by 12 downstream teams.",
         "Mentored 4 junior engineers; two were promoted to mid-level within a year.",
       ],
+      projects: [],
     },
     {
       id: "exp-2",
@@ -44,6 +45,7 @@ export const SAMPLE_RESUME: Resume = {
         "Owned the billing pipeline processing $2M+/month in transactions with zero data-loss incidents.",
         "Introduced contract testing between services, cutting integration bugs in production by 35%.",
       ],
+      projects: [],
     },
   ],
   education: [

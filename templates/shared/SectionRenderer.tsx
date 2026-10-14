@@ -2,6 +2,7 @@ import { View, Text, Font } from "@react-pdf/renderer";
 import type { Resume, SectionId } from "@/lib/schema/resume";
 import type { SectionStyleContract } from "./styleContract";
 import { BulletList } from "./BulletList";
+import { ExperienceProjects } from "./ExperienceProjects";
 import { formatDateRange } from "./formatDateRange";
 
 // Imported by every template, so this runs exactly once (module caching)
@@ -107,7 +108,9 @@ function renderBody(section: SectionId, resume: Resume, styles: SectionStyleCont
                   <Text style={styles.itemSubtitle}>{entry.location}</Text>
                 ) : null}
               </View>
-              <BulletList bullets={entry.bullets} styles={styles} />
+              {/* Role-level `entry.bullets` are deliberately not printed —
+                  a role's content lives in its Project Details. */}
+              <ExperienceProjects projects={entry.projects} styles={styles} />
             </View>
           ))}
         </>

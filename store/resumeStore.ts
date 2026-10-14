@@ -83,7 +83,7 @@ export const useResumeStore = create<ResumeState>()(
     }),
     {
       name: "resume-builder:v1",
-      version: 1,
+      version: 2,
       // Only persist the actual resume data + selection, not transient UI
       // state like hydration flag or undo/redo stacks.
       partialize: (state) => ({
@@ -94,7 +94,23 @@ export const useResumeStore = create<ResumeState>()(
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
       },
-      migrate: (persistedState) => persistedState as ResumeState,
+      // v2 added `projects` to each experience entry — backfill it so
+      // resumes saved before then don't hit `undefined.map` in the forms
+      // and templates.
+      migrate: (persistedState) => {
+        const state = persistedState as ResumeState;
+        if (!state?.resume?.experience) return state;
+        return {
+          ...state,
+          resume: {
+            ...state.resume,
+            experience: state.resume.experience.map((e) => ({
+              ...e,
+              projects: e.projects ?? [],
+            })),
+          },
+        };
+      },
     }
   )
 );

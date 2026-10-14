@@ -1,6 +1,7 @@
 import { Document, Packer, Paragraph, TextRun, HeadingLevel } from "docx";
 import type { Resume, SectionId } from "@/lib/schema/resume";
 import { formatDateRange } from "@/templates/shared/formatDateRange";
+import { projectDetailLines } from "@/templates/shared/ExperienceProjects";
 
 const SECTION_TITLES: Record<SectionId, string> = {
   summary: "Summary",
@@ -79,8 +80,39 @@ function buildSectionParagraphs(section: SectionId, resume: Resume): Paragraph[]
           }),
         ];
         if (entry.location) paragraphs.push(new Paragraph({ text: entry.location }));
-        for (const bullet of entry.bullets) {
-          if (bullet.trim()) paragraphs.push(new Paragraph({ text: bullet, bullet: { level: 0 } }));
+        let projectHeadingAdded = false;
+        for (const project of entry.projects) {
+          const projectBullets = project.bullets.filter((b) => b.trim());
+          const details = projectDetailLines(project);
+          if (details.length === 0 && projectBullets.length === 0) {
+            continue;
+          }
+          if (!projectHeadingAdded) {
+            paragraphs.push(
+              new Paragraph({ children: [new TextRun({ text: "Project Details", bold: true })] })
+            );
+            projectHeadingAdded = true;
+          }
+          const duration = formatDateRange(project.startDate, project.endDate);
+          details.forEach(([label, value], i) => {
+            paragraphs.push(
+              new Paragraph({
+                children: [
+                  new TextRun({ text: `${label}: `, bold: true }),
+                  new TextRun({ text: value }),
+                  ...(i === 0 && duration
+                    ? [new TextRun({ text: `    ${duration}`, italics: true })]
+                    : []),
+                ],
+              })
+            );
+          });
+          if (details.length === 0 && duration) {
+            paragraphs.push(new Paragraph({ children: [new TextRun({ text: duration, italics: true })] }));
+          }
+          for (const bullet of projectBullets) {
+            paragraphs.push(new Paragraph({ text: bullet, bullet: { level: 0 } }));
+          }
         }
         return paragraphs;
       });

@@ -2,7 +2,7 @@ import { Document, Page, View, Text, StyleSheet } from "@react-pdf/renderer";
 import type { Style } from "@react-pdf/types";
 import type { Resume } from "@/lib/schema/resume";
 import { SectionRenderer, sectionHasContent } from "../shared/SectionRenderer";
-import { BulletList } from "../shared/BulletList";
+import { ExperienceProjects } from "../shared/ExperienceProjects";
 import { formatDateRange } from "../shared/formatDateRange";
 import { registerResumeFonts } from "../shared/fonts";
 import type { SectionStyleContract } from "../shared/styleContract";
@@ -87,7 +87,7 @@ function TimelineExperienceList({
               </Text>
             </View>
             {entry.location ? <Text style={styles.itemSubtitle}>{entry.location}</Text> : null}
-            <BulletList bullets={entry.bullets} styles={styles} />
+            <ExperienceProjects projects={entry.projects} styles={styles} />
           </View>
         </View>
       ))}

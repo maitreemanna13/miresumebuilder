@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
   try {
     const response = await anthropic.messages.parse({
       model: REFINE_MODEL,
-      max_tokens: 4096,
+      max_tokens: 8192,
       system: EXTRACT_SYSTEM_PROMPT,
       messages: [{ role: "user", content: rawText.slice(0, MAX_TEXT_SENT_TO_MODEL) }],
       output_config: {
