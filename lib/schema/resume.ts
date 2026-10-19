@@ -25,7 +25,7 @@ export const ExperienceProjectSchema = z.object({
   role: z.string().max(160).optional(),
   startDate: z.string().max(20).optional(),
   endDate: z.string().max(20).optional(),
-  bullets: z.array(z.string().max(400)).max(8).default([]),
+  bullets: z.array(z.string().max(400)).max(15).default([]),
   technologies: z.array(z.string().max(40)).max(20).default([]),
 });
 
